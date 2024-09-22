@@ -1,5 +1,7 @@
 import datetime
 import os.path
+import sys
+
 import pytz
 import requests
 import json
@@ -9,7 +11,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from models import RaceTable, Root, Race
+from models import RaceTable, Root, Race, TimeTable, FirstPractice, SecondPractice, ThirdPractice, Qualifying, Sprint
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
@@ -39,7 +41,17 @@ def main():
         service = build("calendar", "v3", credentials=creds)
         race_table = fetch_formula_one_schedule()
         for race in race_table.Races:
-            add_calendar_event(service, race)
+            if race.FirstPractice.date:
+                add_calendar_event(service, race, race.FirstPractice)
+            if race.SecondPractice.date:
+                add_calendar_event(service, race, race.SecondPractice)
+            if race.ThirdPractice.date:
+                add_calendar_event(service, race, race.ThirdPractice)
+            if race.Qualifying.date:
+                add_calendar_event(service, race, race.Qualifying)
+            if race.Sprint.date:
+                add_calendar_event(service, race, race.Sprint)
+            add_calendar_event(service, race, TimeTable(date=race.date, time=race.time), True)
 
     except HttpError as error:
         print(f"An error occurred: {error}")
@@ -55,30 +67,36 @@ def fetch_formula_one_schedule(season=datetime.datetime.now().year) -> RaceTable
     return root.MRData.RaceTable
 
 
-def add_calendar_event(service, race: Race):
+def add_calendar_event(service, race: Race, timetable: TimeTable, early_reminder=False):
     """
     Add a race event to the calendar
     :param service: Configured service that will be used to add the race event
     :param race: Race info
+    :param timetable: Schedule of this event
+    :param early_reminder: If True set an early reminder starting from the day before
     :return:
     """
     event = {
-        'summary': '🏁 ' + race.raceName,
+        'summary': assign_event_name(race.raceName, timetable),
         'start': {
-            'dateTime': parse_date(race.date, race.time).isoformat(),
+            'dateTime': parse_date(timetable.date, timetable.time).isoformat(),
         },
         'end': {
-            'dateTime': (parse_date(race.date, race.time) + datetime.timedelta(hours=1, minutes=30)).isoformat(),
+            'dateTime': (parse_date(timetable.date, timetable.time) + datetime.timedelta(hours=1, minutes=30)).isoformat(),
         },
         'reminders': {
+            'useDefault': True,
+        },
+    }
+
+    if early_reminder:
+        event['reminders'] = {
             'useDefault': False,
             'overrides': [
                 {'method': 'popup', 'minutes': 24 * 60},
                 {'method': 'popup', 'minutes': 60},
             ],
-        },
-    }
-    print(event)
+        }
     event = service.events().insert(calendarId='primary', body=event).execute()
     print('Race added: %s' % (event.get('htmlLink')))
 
@@ -91,9 +109,34 @@ def parse_date(date, time) -> datetime.datetime:
     :return:
     """
     date_str = f'{date} {time}'
-    date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M:%SZ")
-    date_obj = pytz.UTC.localize(date_obj)
-    return date_obj
+    try:
+        date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M:%SZ")
+        date_obj = pytz.UTC.localize(date_obj)
+        return date_obj
+    except ValueError as err:
+        print(err, f'invalid date {date}')
+        sys.exit(1)
+
+
+def assign_event_name(race_name: str, event: TimeTable) -> str:
+    """
+    Return a title based on the event type
+    :param race_name: Grand Prix name
+    :param event: Object representing the event (First Practice, Second Practice, Third Practice, Qualifying, Sprint)
+    :return:
+    """
+    if isinstance(event, FirstPractice):
+        return f'1️⃣st Practice @ {race_name}'
+    elif isinstance(event, SecondPractice):
+        return f'2️⃣nd Practice @ {race_name}'
+    elif isinstance(event, ThirdPractice):
+        return f'3️⃣ Practice @ {race_name}'
+    elif isinstance(event, Qualifying):
+        return f'⏱️ Qualifying @ {race_name}'
+    elif isinstance(event, Sprint):
+        return f'🏎️ Sprint Race @ {race_name}'
+    else:
+        return '🏁 ' + race_name
 
 
 if __name__ == "__main__":

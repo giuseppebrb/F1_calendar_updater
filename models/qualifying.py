@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 from typing import Any
+from .timeTable import TimeTable
 
 
 @dataclass
-class Qualifying:
-    date: str
-    time: str
+class Qualifying(TimeTable):
+    def __init__(self, date, time):
+        super().__init__(date, time)
 
     @staticmethod
     def from_dict(obj: Any) -> 'Qualifying':

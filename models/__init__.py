@@ -9,6 +9,7 @@ from .root import Root
 from .secondPractice import SecondPractice
 from .sprint import Sprint
 from .thirdPractice import ThirdPractice
+from .timeTable import TimeTable
 
 __all__ = ['Circuit', 'FirstPractice', 'Location', 'MRData', 'Qualifying', 'Race', 'RaceTable', 'Root', 'SecondPractice',
-           'Sprint', 'ThirdPractice']
+           'Sprint', 'ThirdPractice', 'TimeTable']

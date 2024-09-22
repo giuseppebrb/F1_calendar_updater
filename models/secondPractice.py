@@ -1,11 +1,13 @@
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
+from .timeTable import TimeTable
 
 
 @dataclass
-class SecondPractice:
-    date: Optional[str]
-    time: Optional[str]
+class SecondPractice(TimeTable):
+
+    def __init__(self, date, time):
+        super().__init__(date, time)
 
     @staticmethod
     def from_dict(obj: Any) -> 'SecondPractice':

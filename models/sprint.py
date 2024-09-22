@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Any, Optional
-
+from .timeTable import TimeTable
 
 @dataclass
-class Sprint:
-    date: Optional[str] = None
-    time: Optional[str] = None
+class Sprint(TimeTable):
+    def __init__(self, date, time):
+        super().__init__(date, time)
 
     @staticmethod
     def from_dict(obj: Any) -> 'Sprint':
