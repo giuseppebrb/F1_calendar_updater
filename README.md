@@ -1,9 +1,9 @@
 # Formula 1 Calendar Updater
-A Python script that fetches the Formula 1 schedule from jolpi.ca/ergast API and adds the races to your Google Calendar.
+A Python script that fetches the Formula 1 schedule from [jolpica-f1](https://github.com/jolpica/jolpica-f1) API and adds the races to your Google Calendar.
 
 ## Features
 
-* Fetches the current Formula 1 schedule from jolpi.ca/ergast API
+* Fetches the current Formula 1 schedule from [jolpica-f1](https://github.com/jolpica/jolpica-f1) API
 * Adds each race to your Google Calendar as a separate event
 * Sets reminders for each event (24 hours and 1 hour before the race)
 
@@ -22,7 +22,7 @@ A Python script that fetches the Formula 1 schedule from jolpi.ca/ergast API and
 
 ## Notes
 
-* This script uses the `jolpi.ca/ergast` API to fetch the Formula 1 schedule. Please note that this API may change or become unavailable at any time.
+* This script uses the [jolpica-f1](https://github.com/jolpica/jolpica-f1) API to fetch the Formula 1 schedule. Please note that this API may change or become unavailable at any time.
 * This script uses the Google Calendar API to add events to your calendar. You need to have the `https://www.googleapis.com/auth/calendar` scope enabled in your Google Cloud Console project.
 * The script will create a new `token.json` file in the current directory to store your Google Calendar API credentials. This file will be created automatically when running the script for the first time.
 
@@ -36,6 +36,6 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 
 ## Credits
 
-* [jolpi.ca/ergast API](https://api.jolpi.ca/ergast/) for providing the Formula 1 schedule data
+* [jolpica-f1](https://github.com/jolpica/jolpica-f1) for providing the Formula 1 schedule data
 * [Google Calendar API](https://developers.google.com/calendar) for providing the calendar events API
 * [Google API Client Library for Python](https://github.com/googleapis/google-api-python-client) for providing the Python client library for the Google Calendar API
