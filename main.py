@@ -130,7 +130,7 @@ def assign_event_name(race_name: str, event: TimeTable) -> str:
     elif isinstance(event, SecondPractice):
         return f'2️⃣nd Practice @ {race_name}'
     elif isinstance(event, ThirdPractice):
-        return f'3️⃣ Practice @ {race_name}'
+        return f'3️⃣rd Practice @ {race_name}'
     elif isinstance(event, Qualifying):
         return f'⏱️ Qualifying @ {race_name}'
     elif isinstance(event, Sprint):
