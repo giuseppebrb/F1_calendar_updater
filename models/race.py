@@ -7,6 +7,7 @@ from .thirdPractice import ThirdPractice
 from .qualifying import Qualifying
 from .sprint import Sprint
 
+
 @dataclass
 class Race:
     season: str

@@ -1,6 +1,9 @@
+import json
 from dataclasses import dataclass
 from typing import Any
+
 from .raceTable import RaceTable
+
 
 @dataclass
 class MRData:

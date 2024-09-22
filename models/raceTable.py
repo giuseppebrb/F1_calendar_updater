@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import List, Any
 from .race import Race
 
+
 @dataclass
 class RaceTable:
     season: str
