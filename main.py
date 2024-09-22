@@ -39,8 +39,7 @@ def main():
         service = build("calendar", "v3", credentials=creds)
         race_table = fetch_formula_one_schedule()
         for race in race_table.Races:
-            if race.raceName == 'Singapore Grand Prix':
-                add_calendar_event(service, race)
+            add_calendar_event(service, race)
 
     except HttpError as error:
         print(f"An error occurred: {error}")
